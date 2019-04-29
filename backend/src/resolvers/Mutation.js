@@ -1,14 +1,18 @@
 const mutations = {
-    createDog(parent, args, ctx, info) {
-        //create a dog
-        global.dogs = global.dogs || [];
+  async createItem(parent, args, ctx, info) {
+    //TODO check if user is logged in
+    const item = await ctx.db.mutation.createItem(
+      {
+        data: {
+          ...args
+        }
+      },
+      info
+    );
 
-        const newDog = {name: args.name }
-        global.dogs.push(newDog);
-        return newDog;
-    }
-
-
+    console.log(item);
+    return item;
+  }
 };
 
 module.exports = mutations;
