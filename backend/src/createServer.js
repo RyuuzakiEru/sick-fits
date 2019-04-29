@@ -15,6 +15,7 @@ function createServer() {
             requireResolversForResolveType: false,
 
         },
+        //spread db into request context
         context: req => ({...req, db}),
     });
 
