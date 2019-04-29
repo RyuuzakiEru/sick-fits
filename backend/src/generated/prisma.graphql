@@ -1,5 +1,5 @@
-# source: https://eu1.prisma.sh/roberto-morales/sick-fits/dev
-# timestamp: Mon Apr 29 2019 10:26:23 GMT+0200 (GMT+02:00)
+# source: https://eu1.prisma.sh/ryuuzaki-dev/sick-fits/dev
+# timestamp: Mon Apr 29 2019 11:01:08 GMT+0200 (GMT+02:00)
 
 type AggregateUser {
   count: Int!
