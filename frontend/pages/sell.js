@@ -1,6 +1,4 @@
-const Sell = props => (
-  <div>
-    <p>Sell</p>
-  </div>
-);
-export default Sell;
+import Home from "./index";
+
+export default Home;
+
