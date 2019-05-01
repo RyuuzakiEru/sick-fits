@@ -4,8 +4,8 @@ import gql from "graphql-tag";
 
 import Form from "./styles/Form";
 import formatMoney from "../lib/formatMoney";
-import Error from './ErrorMessage';
-import Router from 'next/router';
+import Error from "./ErrorMessage";
+import Router from "next/router";
 
 // Create mutation and define inputs, these will match input names in for for easy deconstruct
 const CREATE_ITEM_MUTATION = gql`
@@ -29,7 +29,7 @@ const CREATE_ITEM_MUTATION = gql`
 `;
 
 class CreateItem extends Component {
-    //initial state to store form temporary values
+  //initial state to store form temporary values
   state = {
     title: "",
     description: "",
@@ -37,6 +37,7 @@ class CreateItem extends Component {
     largeImage: "",
     price: 0
   };
+
   handleChange = e => {
     // we handle change by storing into state
     const { name, type, value } = e.target;
@@ -44,9 +45,31 @@ class CreateItem extends Component {
     //console.log( {name, val} );
     this.setState({ [name]: val });
   };
+
+  uploadFile = async e => {
+    console.log("Uploading File...");
+    const files = e.target.files;
+    const data = new FormData();
+    data.append("file", files[0]);
+    data.append("upload_preset", "sick-fits");
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/ryuuzaki/image/upload',
+      {
+        method: 'POST',
+        body: data
+      }
+    );
+    //console.log(res);
+    const file = await res.json();
+    console.log(file);
+    this.setState({
+      image: file.secure_url,
+      largerImage: file.eager[0].secure_url
+    });
+  };
   render() {
     return (
-    //Mutation receives state, being constantly updated and having matching names this is less work
+      //Mutation receives state, being constantly updated and having matching names this is less work
       <Mutation mutation={CREATE_ITEM_MUTATION} variables={this.state}>
         {(createItem, { loading, error, called, data }) => (
           <Form
@@ -56,16 +79,27 @@ class CreateItem extends Component {
               const res = await createItem();
               console.log(res);
               Router.push({
-                      pathname: '/item',
-                      query: {id: res.data.createItem.id}
-                  })
+                pathname: "/item",
+                query: { id: res.data.createItem.id }
+              });
             }}
           >
-          {
+            {
               //Apollo Mutation will keep error and loading variables updated for us, so we can auto apply loading state to fieldset and display any potential errors in UI
-          }
+            }
             <Error error={error} />
             <fieldset disabled={loading} aria-busy={loading}>
+              <label htmlFor="file">
+                Image
+                <input
+                  type="file"
+                  id="file"
+                  name="file"
+                  placeholder="Upload an Image"
+                  onChange={this.uploadFile}
+                />
+                {this.state.image && <img src={this.state.image} alt={this.state.title} />}
+              </label>
               <label htmlFor="title">
                 Title
                 <input
