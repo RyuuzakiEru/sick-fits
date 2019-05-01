@@ -7,6 +7,7 @@ import formatMoney from "../lib/formatMoney";
 import Error from './ErrorMessage';
 import Router from 'next/router';
 
+// Create mutation and define inputs, these will match input names in for for easy deconstruct
 const CREATE_ITEM_MUTATION = gql`
   mutation CREATE_ITEM_QUERY(
     $title: String!
@@ -60,6 +61,9 @@ class CreateItem extends Component {
                   })
             }}
           >
+          {
+              //Apollo Mutation will keep error and loading variables updated for us, so we can auto apply loading state to fieldset and display any potential errors in UI
+          }
             <Error error={error} />
             <fieldset disabled={loading} aria-busy={loading}>
               <label htmlFor="title">
