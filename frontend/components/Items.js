@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import styled from 'styled-components';
+import Item from './Item';
 
 const ALL_ITEMS_QUERY = gql`
     query ALL_ITEMS_QUERY {
@@ -22,9 +23,10 @@ const Center = styled.div`
 
 const ItemList = styled.div`
     display:grid;
-    grid-auto-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-gap: 60px;
     max-width: ${props =>props.theme.maxWidth};
+    margin: 0 auto;
 `;
 
 class Items extends Component {
@@ -32,19 +34,16 @@ class Items extends Component {
         return(
             <Center>
                 <Query query={ALL_ITEMS_QUERY}>
-                    {
+                    { // destructuring payload
                         ({data, error, loading}) => {
                             if (loading) return <p>Loading...</p>
                             if (error) return <p>Error: {error.message}</p>
-                            return (
-                                <ItemList>
-                                    {
-                                        data.items.map( (item, i) => <p key={i} >{item.title}</p> )
+                            return (<ItemList>
+                                {
+                                    data.items.map( (item) => <Item key={item.id} item={item} /> )
+                                }
+                                </ItemList>)
 
-                                    }
-
-                                </ItemList>
-                            )
                         }
                     }
                 </Query>
