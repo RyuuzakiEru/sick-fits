@@ -9,7 +9,7 @@ import Router from "next/router";
 
 // Create mutation and define inputs, these will match input names in for for easy deconstruct
 const CREATE_ITEM_MUTATION = gql`
-  mutation CREATE_ITEM_QUERY(
+  mutation CREATE_ITEM_MUTATION(
     $title: String!
     $description: String!
     $price: Int!

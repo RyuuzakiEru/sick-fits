@@ -12,6 +12,25 @@ const mutations = {
 
     console.log(item);
     return item;
+  },
+
+  updateItem(parent, args, ctx, info) {
+      //get copy of item
+      const updates = {...args };
+      //remove ID
+      delete updates.id;
+      // run update method
+      return ctx.db.mutation.updateItem(
+        {
+          data: updates,
+          where: {
+            id: args.id
+          }
+        },
+        info
+      );
+
+
   }
 };
 
