@@ -8,8 +8,9 @@ const Query = {
 
   }*/
   //if no additional logic, directly forward
-  items: forwardTo('db'),
-  item: forwardTo('db'),
+  items: forwardTo("db"),
+  item: forwardTo("db"),
+  itemsConnection: forwardTo("db")
 };
 
 module.exports = Query;
