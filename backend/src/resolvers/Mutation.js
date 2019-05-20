@@ -1,5 +1,5 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const Mutations = {
   async createItem(parent, args, ctx, info) {
@@ -44,35 +44,39 @@ const Mutations = {
     return ctx.db.mutation.deleteItem({ where }, info);
   },
 
-  async signup(parent, args, ctx, info ) {
+  async signup(parent, args, ctx, info) {
     //Lowercase email
+    const errors = [];
     args.email = args.email.toLowerCase();
     const password = await bcrypt.hash(args.password, 10);
-
+    if (args.password === "") errors.push(new Error("Password cannot be empty"));
+    if (args.name === "") errors.push(new Error("Name cannot be empty"));
+    if (args.email === "") errors.push(new Error("Email cannot be empty"));
+    if (errors.length > 0) {
+        throw errors;
+    }
     const user = await ctx.db.mutation.createUser(
       {
         data: {
           ...args,
           password,
-          permissions: {set: ['USER'] },
+          permissions: { set: ["USER"] }
         }
       },
       info
     );
     //create JWT token
-    const token = jwt.sign( { userId: user.id }, process.env.APP_SECRET );
+    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
     // set jwt token in cookie
 
-    ctx.response.cookie('token', token, {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 *24 *365, //1 year cookie
+    ctx.response.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365 //1 year cookie
     });
 
     // now we return user
 
     return user;
-
-
   }
 };
 
