@@ -49,12 +49,6 @@ const Mutations = {
     const errors = [];
     args.email = args.email.toLowerCase();
     const password = await bcrypt.hash(args.password, 10);
-    if (args.password === "") errors.push(new Error("Password cannot be empty"));
-    if (args.name === "") errors.push(new Error("Name cannot be empty"));
-    if (args.email === "") errors.push(new Error("Email cannot be empty"));
-    if (errors.length > 0) {
-        throw errors;
-    }
     const user = await ctx.db.mutation.createUser(
       {
         data: {
@@ -76,6 +70,28 @@ const Mutations = {
 
     // now we return user
 
+    return user;
+  },
+
+  async signin(parent, { email, password }, ctx, info) {
+    // check if there's user with email
+    const user = await ctx.db.query.user({ where: { email } });
+    if (!user) {
+      throw new Error("Incorrect email/password combination");
+    }
+    //check if password is correct
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+      throw new Error("Incorrect email/password combination");
+    }
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+    // Set cookie with token
+    ctx.response.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365 //1 year cookie
+    });
+    // Return user
     return user;
   }
 };
