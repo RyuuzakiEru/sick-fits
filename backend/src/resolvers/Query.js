@@ -18,7 +18,7 @@ const Query = {
     return ctx.db.query.user({
         where: {id: ctx.request.userId}
     }, info);
-  }
+  },
 };
 
 module.exports = Query;
