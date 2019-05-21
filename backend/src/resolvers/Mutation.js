@@ -163,7 +163,7 @@ const Mutations = {
    });
 
     // return user
-    return user;
+    return updatedUser;
 
   }
 };
