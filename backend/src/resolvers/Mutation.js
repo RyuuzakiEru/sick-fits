@@ -2,13 +2,24 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { randomBytes } = require("crypto");
 const { promisify } = require("util");
+const { transport, makeANiceEmail } = require("../mail");
 
 const Mutations = {
   async createItem(parent, args, ctx, info) {
     //TODO check if user is logged in
+    if (!ctx.request.userId) {
+      throw new Error("You must be logged in");
+    }
+
     const item = await ctx.db.mutation.createItem(
       {
         data: {
+            //create relationship between item and user
+          user: {
+            connect: {
+              id: ctx.request.userId
+            }
+          },
           ...args
         }
       },
@@ -102,7 +113,6 @@ const Mutations = {
     return { message: "Logged Out" };
   },
 
-
   async requestReset(parent, { email }, ctx, info) {
     //check if there's real user
     const user = await ctx.db.query.user({ where: { email } });
@@ -120,17 +130,30 @@ const Mutations = {
         resetTokenExpiry
       }
     });
-    console.log(res);
-    //email to user
+    //TODO email to user
+    const mailRes = await transport.sendMail({
+      from: "rmorales82@outlook.com",
+      to: user.email,
+      subject: "Your password reset link",
+      html: makeANiceEmail(`Your password reset link: \n\n
+
+        <a href="${
+          process.env.FRONTEND_URL
+        }/reset?resetToken=${resetToken}">Click to reset your password</a>`)
+    });
 
     return { message: "Please check your email" };
   },
 
-
-  async resetPassword(parent, {resetToken, password, confirmPassword }, ctx, info) {
+  async resetPassword(
+    parent,
+    { resetToken, password, confirmPassword },
+    ctx,
+    info
+  ) {
     //check if passwords match
     if (!(password === confirmPassword)) {
-        throw new Error ("Passwords don't match");
+      throw new Error("Passwords don't match");
     }
     //check if there's a legit reset token
     const [user] = await ctx.db.query.users({
@@ -151,20 +174,16 @@ const Mutations = {
       }
     });
     // generate jwt
-    const token = jwt.sign(
-      { userId: updatedUser.id },
-      process.env.APP_SECRET
-    );
+    const token = jwt.sign({ userId: updatedUser.id }, process.env.APP_SECRET);
 
     //set cookie
-   ctx.response.cookie("token", token, {
-     httpOnly: true,
-     maxAge: 1000 * 60 * 60 * 24 * 365 //1 year cookie
-   });
+    ctx.response.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365 //1 year cookie
+    });
 
     // return user
     return updatedUser;
-
   }
 };
 

@@ -14,7 +14,7 @@ const REQUEST_RESET_MUTATION = gql`
 
 class RequestReset extends Component {
   state = {
-    email: ""
+    email: '',
   };
 
   saveToState = e => {
