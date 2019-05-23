@@ -14,7 +14,7 @@ const Mutations = {
     const item = await ctx.db.mutation.createItem(
       {
         data: {
-            //create relationship between item and user
+          //create relationship between item and user
           user: {
             connect: {
               id: ctx.request.userId
@@ -130,7 +130,8 @@ const Mutations = {
         resetTokenExpiry
       }
     });
-    //TODO email to user
+    //email to user
+    //TODO error handling
     const mailRes = await transport.sendMail({
       from: "rmorales82@outlook.com",
       to: user.email,
