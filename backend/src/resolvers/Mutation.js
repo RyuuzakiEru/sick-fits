@@ -58,6 +58,17 @@ const Mutations = {
   },
 
   async signup(parent, args, ctx, info) {
+    // check if any users to define admin
+
+    const currentUsers = await ctx.db.query.users({}, info);
+    console.log(currentUsers.length);
+    if (currentUsers.length==0){
+        permissions = ["ADMIN"];
+    }else {
+        permissions = ["USER"];
+    }
+
+
     //Lowercase email
     const errors = [];
     args.email = args.email.toLowerCase();
@@ -67,7 +78,7 @@ const Mutations = {
         data: {
           ...args,
           password,
-          permissions: { set: ["USER"] }
+          permissions: { set: permissions }
         }
       },
       info
