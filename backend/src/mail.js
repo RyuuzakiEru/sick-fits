@@ -20,7 +20,7 @@ const makeANiceEmail = text => `
         <p>${text}</p>
 
 
-    ></div>
+    </div>
 `;
 
 exports.transport = transport;
