@@ -50,9 +50,18 @@ const Mutations = {
   async deleteItem(parent, args, ctx, info) {
     const where = { id: args.id };
     //find item
-    const item = await ctx.db.query.item({ where }, `{id title}`);
+    const item = await ctx.db.query.item({ where }, `{id title user {id}}`);
     //TODO check permissions
 
+    //check if owner
+    const ownsItem = item.user.id === ctx.request.userId;
+    //check if admin or itemdelete
+    const hasPermission = ctx.request.user.permissions.some(permission =>
+      ["ADMIN", "ITEMDELETE"].includes(permission)
+    );
+    if (!ownsItem && !hasPermission){
+        throw new Error('Not allowed');
+    }
     //Delete
     return ctx.db.mutation.deleteItem({ where }, info);
   },
@@ -61,12 +70,11 @@ const Mutations = {
     // check if any users to define admin
 
     const currentUsers = await ctx.db.query.users({}, info);
-    if (currentUsers.length==0){
-        permissions = ["ADMIN"];
-    }else {
-        permissions = ["USER"];
+    if (currentUsers.length == 0) {
+      permissions = ["ADMIN"];
+    } else {
+      permissions = ["USER"];
     }
-
 
     //Lowercase email
     const errors = [];
@@ -197,30 +205,36 @@ const Mutations = {
     return updatedUser;
   },
 
-  async updatePermissions (parent, args, ctx, info) {
+  async updatePermissions(parent, args, ctx, info) {
     //check logged in
     if (!ctx.request.userId) {
-        throw new Error ('Please Log in');
+      throw new Error("Please Log in");
     }
     //query current user
-    const currentUser = await ctx.db.query.user({
+    const currentUser = await ctx.db.query.user(
+      {
         where: {
-            id: ctx.request.userId
+          id: ctx.request.userId
         }
-    }, info);
+      },
+      info
+    );
     //check permissions
     hasPermission(currentUser, ["ADMIN", "PERMISSIONUPDATE"]);
     //update permissions
-    return ctx.db.mutation.updateUser({
+    return ctx.db.mutation.updateUser(
+      {
         data: {
-            permissions: {
-                set: args.permissions
-            }
+          permissions: {
+            set: args.permissions
+          }
         },
         where: {
-            id: args.userId
+          id: args.userId
         }
-    },info)
+      },
+      info
+    );
   }
 };
 
