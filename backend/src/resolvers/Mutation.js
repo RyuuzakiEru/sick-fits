@@ -11,7 +11,12 @@ const Mutations = {
     if (!ctx.request.userId) {
       throw new Error("You must be logged in");
     }
-
+    const hasPermission = ctx.request.user.permissions.some(permission =>
+      ["ADMIN", "ITEMCREATE"].includes(permission)
+    );
+    if (!hasPermission) {
+      throw new Error("Not allowed");
+    }
     const item = await ctx.db.mutation.createItem(
       {
         data: {
