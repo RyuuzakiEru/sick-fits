@@ -47,8 +47,11 @@ class CreateItem extends Component {
   };
 
   uploadFile = async e => {
-    console.log("Uploading File...");
+
     const files = e.target.files;
+    console.log(files);
+    //check cancel button
+    if (files.length === 0 ) return;
     const data = new FormData();
     data.append("file", files[0]);
     data.append("upload_preset", "sick-fits");
@@ -61,10 +64,10 @@ class CreateItem extends Component {
     );
     //console.log(res);
     const file = await res.json();
-    console.log(file);
     this.setState({
       image: file.secure_url,
-      largeImage: file.eager[0].secure_url
+      largeImage:
+        (file.eager && file.eager[0].secure_url) || this.state.largeImage
     });
   };
   render() {
