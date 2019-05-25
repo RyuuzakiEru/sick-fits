@@ -7,7 +7,6 @@ const { hasPermission } = require("../utils");
 
 const Mutations = {
   async createItem(parent, args, ctx, info) {
-    //TODO check if user is logged in
     if (!ctx.request.userId) {
       throw new Error("You must be logged in");
     }
@@ -56,7 +55,6 @@ const Mutations = {
     const where = { id: args.id };
     //find item
     const item = await ctx.db.query.item({ where }, `{id title user {id}}`);
-    //TODO check permissions
 
     //check if owner
     const ownsItem = item.user.id === ctx.request.userId;
@@ -75,7 +73,7 @@ const Mutations = {
     // check if any users to define admin
 
     const currentUsers = await ctx.db.query.users({}, info);
-    if (currentUsers.length == 0) {
+    if (currentUsers.length === 0) {
       permissions = ["ADMIN"];
     } else {
       permissions = ["USER"];

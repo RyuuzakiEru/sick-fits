@@ -135,7 +135,6 @@ class UpdateItem extends Component {
                     <label htmlFor="description">
                       Description
                       <textarea
-                        type="text"
                         id="description"
                         name="description"
                         placeholder="Enter a Description"
