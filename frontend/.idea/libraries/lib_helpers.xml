@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="lib helpers" type="javaScript">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/calcTotalPrice.js" />
+      <root url="file://$PROJECT_DIR$/lib/formatMoney.js" />
+      <root url="file://$PROJECT_DIR$/lib/testUtils.js" />
+      <root url="file://$PROJECT_DIR$/lib/withData.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>
