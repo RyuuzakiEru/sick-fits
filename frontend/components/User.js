@@ -3,14 +3,18 @@ import gql from "graphql-tag";
 import PropTypes from "prop-types";
 
 const CURRENT_USER_QUERY = gql`
-    query CURRENT_USER_QUERY {
-        me {
+  query CURRENT_USER_QUERY {
+    me {
+      id
+      email
+      name
+      permissions
+      cart {
         id
-        email
-        name
-        permissions
+        quantity
+      }
     }
-    }
+  }
 `;
 
 const User = props => (
