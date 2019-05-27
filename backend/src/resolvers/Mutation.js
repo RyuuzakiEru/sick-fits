@@ -271,6 +271,25 @@ const Mutations = {
               },
           }
       }, info)
+  },
+
+  async removeFromCart(parent, args, ctx, info) {
+    //find cart item, using context user id makes sure the request owns the cart item
+    const [cartItemToRemove] = await ctx.db.query.cartItems( {
+      where: {
+        id: args.id,
+        user: {id: ctx.request.userId}
+      }
+    }, info);   ;
+    if (!cartItemToRemove) throw new Error ('Error removing item');
+    const removedCartItem = await ctx.db.mutation.deleteCartItem( {
+      where: {id: cartItemToRemove.id}
+    });
+
+    return removedCartItem;
+
+
+
   }
 };
 
