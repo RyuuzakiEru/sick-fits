@@ -3,6 +3,7 @@
 /backend/.vscode/
 /frontend/node_modules/
 /frontend/.next/
-/frontend/.vscode
-/frontend/.idea
-/backend/.idea
+/frontend/.vscode/
+/frontend/.idea/
+/backend/.idea/
+/.idea/
