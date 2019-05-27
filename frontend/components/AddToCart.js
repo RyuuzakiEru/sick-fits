@@ -21,7 +21,7 @@ class AddToCart extends Component {
         variables={{ id }}
         refetchQueries={[{ query: CURRENT_USER_QUERY }]}
       >
-        {addToCart => <button onClick={addToCart}>Add to Cart</button>}
+        {(addToCart, {loading, error}) => <button disabled={loading} onClick={addToCart}>Add{loading && 'ing'} to Cart</button>}
       </Mutation>
     );
   }

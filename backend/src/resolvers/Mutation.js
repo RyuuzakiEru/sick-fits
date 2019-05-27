@@ -280,17 +280,15 @@ const Mutations = {
         id: args.id,
         user: {id: ctx.request.userId}
       }
-    }, info);   ;
+    }, `{ id, user {id} }`);
+
     if (!cartItemToRemove) throw new Error ('Error removing item');
-    const removedCartItem = await ctx.db.mutation.deleteCartItem( {
+    await ctx.db.mutation.deleteCartItem( {
       where: {id: cartItemToRemove.id}
     });
 
-    return removedCartItem;
-
-
-
-  }
+    return cartItemToRemove;
+  },
 };
 
 module.exports = Mutations;
