@@ -24,13 +24,16 @@ function totalItems(cart) {
 }
 
 class TakeMyMoney extends Component {
-  onToken = (res, createOrder) => {
+  onToken = async (res, createOrder) => {
+
     //console.log(res.id);
-    createOrder({
+    const data = await createOrder({
       variables: {
         token: res.id
       }
     }).catch(err => alert(err.message));
+    console.log(data);
+
   };
 
   render() {
@@ -46,11 +49,12 @@ class TakeMyMoney extends Component {
                       amount={calcTotalPrice(me.cart)}
                       name="Sick-fits"
                       description={`Order of ${totalItems(me.cart)} items}`}
-                      image={me.cart[0].item && me.cart[0].item.image}
+                      image={me.cart[0] && me.cart[0].item && me.cart[0].item.image}
                       stripeKey="pk_test_RuvPNz4fo12IMYdL4xqndqVL00F5ttg16p"
                       currency="USD"
                       email={me.email}
-                      token={res => this.onToken(res, createOrder)}
+                      token={(res) => this.onToken(res, createOrder)}
+                      onClick={e => e.preventDefault()}
                   >
                     {this.props.children}
                   </Stripecheckout>
