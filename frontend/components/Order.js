@@ -38,10 +38,10 @@ class Order extends Component {
   render() {
     return (
       <Query query={SINGLE_ORDER_QUERY} variables={{ id: this.props.id }}>
-        {({ data, error, loading }) => {
+        {({ data: { order }, error, loading }) => {
           if (error) return <Error error={error} />;
           if (loading) return <p>Loading...</p>;
-          const {order} = data;
+          //const {order} = data;
           return (
             <OrderStyles>
               <Head>
